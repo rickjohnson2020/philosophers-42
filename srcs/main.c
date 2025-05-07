@@ -10,11 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+void	error_and_exit(const char *msg)
+{
+	printf(msg);
+	exit(EXIT_FAILURE);
+}
+
+void	parse_input(t_table *table, char **av)
+{
+	table->num_of_philos = ft_atoi(av[1]);
+}
+
 int	main(int ac, char **av)
 {
+	t_table	table;
 	if (ac < 5 || ac > 6)
 	{
-		printf("Number of arguments should be 4 or 5.");
-		return(EXIT_FAILURE);
+		error_and_exit("Wrong input.\n");
 	}
+	parse_input(&table, char **av);
 }

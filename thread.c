@@ -13,6 +13,9 @@ void	*routine()
 		pthread_mutex_lock(&mutex);
 		x++;
 		pthread_mutex_unlock(&mutex);
+		pthread_mutex_lock(&mutex);
+		x++;
+		pthread_mutex_unlock(&mutex);
 	}
 	//printf("Test from threads\n");
 	//sleep(3);
