@@ -11,12 +11,19 @@
 /* ************************************************************************** */
 #include <sys/time.h>
 
-long	get_current_time(void)
+void	error_and_exit(const char *msg)
+{
+	printf(msg);
+	exit(EXIT_FAILURE);
+}
+
+long long	get_time_in_ms(void)
 {
 	struct timeval	tv;
+
 	if (gettimeofday(&time, NULL) == -1)
 	{
 		write(2, "gettimeofday() error\n", 21);
 	}
-	return (long)tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return (long long)tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }

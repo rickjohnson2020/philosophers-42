@@ -13,36 +13,39 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <sys/time.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <pthread.h>
+# include <unistd.h>
+
+typedef struct	s_roles t_roles;
 //each philosopher need to be a thread
 typedef struct	s_philo
 {
-	pthread_t		thread;
 	int				id;
+	pthread_t		thread;
+	int				left_fork;
+	int				right_fork;
 	int				meals_eaten;
-	size_t			last_meal_time; //time passed from the last meal
-	size_t			time_to_die; //time passed from the last meal time
-	size_t			time_to_eat;
-	size_t			time_to_sleep;
-	size_t			start_time;
-	int				num_times_must_eat; //optional argument
-	//int				*dead;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-
-	pthread_mutex_t	*write_lock;
-	pthread_mutex_t	*dead_lock;
-	pthread_mutex_t	*meal_lock;
+	long long		last_meal_time;
+	t_rules			*rules;
 }	t_philo;
 
-typedef struct	s_program
+typedef struct	s_rules
 {
-	int		num_of_philos;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		dead_flag;
-	t_philo	*philos;
-}	t_program;
+	int				num_philos;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				meals_required;
+	int				all_alive;
+	long long		start_time;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	meal_check_mutex;
+	t_philo			*philos;
+}	t_rules;
 
 
 #endif
