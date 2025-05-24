@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/philo.h"
+
 static int	ft_atoi_safe(const char *str)
 {
 	int	result;
@@ -46,13 +48,14 @@ void	parse_args(int ac, char **av, t_rules *rules)
 	{
 		if (ft_atoi_safe(av[i]) < 0)
 			error_and_exit("All arguments must be positive integers\n");
+		i++;
 	}
-	rules->num_philos = ft_atoi(av[1]);
-	rules->time_to_die = ft_atoi(av[2]);
-	rules->time_to_eat = ft_atoi(av[3]);
-	rules->time_to_sleep = ft_atoi(av[4]);
+	rules->num_philos = ft_atoi_safe(av[1]);
+	rules->time_to_die = ft_atoi_safe(av[2]);
+	rules->time_to_eat = ft_atoi_safe(av[3]);
+	rules->time_to_sleep = ft_atoi_safe(av[4]);
 	if (ac == 6)
-		rules->meals_required = ft_atoi(av[5]);
+		rules->meals_required = ft_atoi_safe(av[5]);
 	else
 		rules->meals_required = -1;
 }
@@ -60,9 +63,16 @@ void	parse_args(int ac, char **av, t_rules *rules)
 int	main(int ac, char **av)
 {
 	t_rules	rules;
-	t_philo	*philos;
-
+	//t_philo	*philos;
+	printf("Parsing arguments...\n");
 	parse_args(ac, av, &rules);
+	printf("Initializing rules...\n");
 	init_rules(&rules);
+	printf("Initializing philosophers...\n");
 	init_philos(&rules);
+	printf("Starting threads...\n");
+	start_threads(&rules);
+	cleanup(&rules);
+	printf("Done.\n");
+	return (0);
 }

@@ -19,7 +19,7 @@
 # include <pthread.h>
 # include <unistd.h>
 
-typedef struct	s_roles t_roles;
+typedef struct	s_rules t_rules;
 //each philosopher need to be a thread
 typedef struct	s_philo
 {
@@ -39,13 +39,25 @@ typedef struct	s_rules
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meals_required;
-	int				all_alive;
+	int				philo_dead;
+	int				sim_end;
 	long long		start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	meal_check_mutex;
+	pthread_mutex_t	sim_end_mutex;
 	t_philo			*philos;
 }	t_rules;
 
+void		error_and_exit(const char *msg);
+long long	get_time_in_ms(void);
+void		init_rules(t_rules *rules);
+void		init_philos(t_rules *rules);
+void		safe_print(t_philo *philo, char *msg);
+void		*philo_routine(void *arg);
+void		*monitor_routine(void *arg);
+void		start_threads(t_rules *rules);
+int			is_simulation_active(t_rules *rules);
+void		cleanup(t_rules *rules);
 
 #endif
