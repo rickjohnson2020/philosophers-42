@@ -7,15 +7,11 @@ static void	sleeep(t_philo *philo);
 
 void	*philo_routine(void *arg)
 {
-	// 1. think
-	// 2. take forks: lock
-	// 3. eating: usleep
-	//		- mesure last_meal_time
-	// 4. put forks
-	// 5. sleeping
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0)
+		usleep(100);
 	while (is_simulation_active(philo->rules))
 	{
 		think(philo);

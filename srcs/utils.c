@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "../includes/philo.h"
-#include <sys/time.h>
 
 void	error_and_exit(const char *msg)
 {

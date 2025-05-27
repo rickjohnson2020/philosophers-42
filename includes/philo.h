@@ -18,9 +18,10 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <unistd.h>
+# include <limits.h>
 
 typedef struct	s_rules t_rules;
-//each philosopher need to be a thread
+
 typedef struct	s_philo
 {
 	int				id;
@@ -35,9 +36,9 @@ typedef struct	s_philo
 typedef struct	s_rules
 {
 	int				num_philos;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
 	int				meals_required;
 	int				philo_dead;
 	int				sim_end;

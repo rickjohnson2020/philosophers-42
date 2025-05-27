@@ -20,15 +20,6 @@ void	*monitor_routine(void *arg)
 				set_simulation_end(rules);
 				return (NULL);
 			}
-			//pthread_mutex_lock(&rules->meal_check_mutex);
-			//if (get_time_in_ms() - rules->philos[i].last_meal_time > (long long)rules->time_to_die)
-			//{
-			//	safe_print(&rules->philos[i], "died");
-			//	rules->is_dead = 1;
-			//	//TODO:
-			//	end_simulation();
-			//}
-			//pthread_mutex_unlock(&rules->meal_check_mutex);
 			i++;
 		}
 		usleep(100);
@@ -46,7 +37,7 @@ static void	set_simulation_end(t_rules *rules)
 static int	is_philo_dead(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->meal_check_mutex);
-	if (get_time_in_ms() - philo->last_meal_time > (long long)philo->rules->time_to_die)
+	if (get_time_in_ms() - philo->last_meal_time > philo->rules->time_to_die)
 	{
 		safe_print(philo, "died");
 		philo->rules->philo_dead = 1;
@@ -57,7 +48,6 @@ static int	is_philo_dead(t_philo *philo)
 	return (0);
 }
 
-//TODO:
 static int	all_ate_enough(t_rules *rules)
 {
 	int	i;
