@@ -39,6 +39,8 @@ void	cleanup(t_rules *rules)
 			error_and_exit("Failed to join philosopher thread.");
 		i++;
 	}
+	if (pthread_join(rules->monitor, NULL) != 0)
+		error_and_exit("Failed to join philosopher thread.");
 	i = 0;
 	while (i < rules->num_philos)
 	{

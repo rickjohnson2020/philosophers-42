@@ -12,11 +12,11 @@
 
 #include "../includes/philo.h"
 
-static long long	ft_atoll_safe(const char *str)
+static int	ft_atoi_safe(const char *str)
 {
-	long long	result;
-	int			sign;
-	int			i;
+	int	result;
+	int	sign;
+	int	i;
 
 	result = 0;
 	sign = 1;
@@ -32,14 +32,12 @@ static long long	ft_atoll_safe(const char *str)
 	{
 		if (str[i] < '0' || str[i] > '9')
 			error_and_exit("Invalid argument\n");
-		if (result > (LLONG_MAX - (str[i] - '0')) / 10)
-			error_and_exit("Integer overflow\n");
 		result = result * 10 + (str[i++] - '0');
 	}
 	return (result * sign);
 }
 
-static void	parse_args(int ac, char **av, t_rules *rules)
+void	parse_args(int ac, char **av, t_rules *rules)
 {
 	int	i;
 
@@ -48,16 +46,16 @@ static void	parse_args(int ac, char **av, t_rules *rules)
 	i = 1;
 	while (i < ac)
 	{
-		if (ft_atoll_safe(av[i]) < 0)
+		if (ft_atoi_safe(av[i]) < 0)
 			error_and_exit("All arguments must be positive integers\n");
 		i++;
 	}
-	rules->num_philos = ft_atoll_safe(av[1]);
-	rules->time_to_die = ft_atoll_safe(av[2]);
-	rules->time_to_eat = ft_atoll_safe(av[3]);
-	rules->time_to_sleep = ft_atoll_safe(av[4]);
+	rules->num_philos = ft_atoi_safe(av[1]);
+	rules->time_to_die = ft_atoi_safe(av[2]);
+	rules->time_to_eat = ft_atoi_safe(av[3]);
+	rules->time_to_sleep = ft_atoi_safe(av[4]);
 	if (ac == 6)
-		rules->meals_required = ft_atoll_safe(av[5]);
+		rules->meals_required = ft_atoi_safe(av[5]);
 	else
 		rules->meals_required = -1;
 }

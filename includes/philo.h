@@ -36,9 +36,9 @@ typedef struct	s_philo
 typedef struct	s_rules
 {
 	int				num_philos;
-	long long		time_to_die;
-	long long		time_to_eat;
-	long long		time_to_sleep;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				meals_required;
 	int				philo_dead;
 	int				sim_end;
@@ -48,6 +48,7 @@ typedef struct	s_rules
 	pthread_mutex_t	meal_check_mutex;
 	pthread_mutex_t	sim_end_mutex;
 	t_philo			*philos;
+	pthread_t		monitor;
 }	t_rules;
 
 void		error_and_exit(const char *msg);

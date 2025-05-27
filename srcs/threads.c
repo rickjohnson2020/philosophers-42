@@ -20,7 +20,6 @@ int	is_simulation_active(t_rules *rules)
 void	start_threads(t_rules *rules)
 {
 	int			i;
-	pthread_t	monitor;
 
 	rules->start_time = get_time_in_ms();
 	i = 0;
@@ -31,8 +30,7 @@ void	start_threads(t_rules *rules)
 			error_and_exit("Failed to create philosopher thread.\n");
 		i++;
 	}
-	if (pthread_create(&monitor, NULL, &monitor_routine, rules) != 0)
+	if (pthread_create(&rules->monitor, NULL, &monitor_routine, rules) != 0)
 		error_and_exit("Failed to create monitor thread.\n");
-	pthread_detach(monitor);
 }
 
