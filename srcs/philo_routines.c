@@ -1,8 +1,8 @@
 #include "../includes/philo.h"
 
 static void	think(t_philo *philo);
-static void	take_forks(t_philo *philo);
-static void	eat(t_philo *philo);
+static int	take_forks(t_philo *philo);
+static int	eat(t_philo *philo);
 static void	sleeep(t_philo *philo);
 
 static void	optimized_usleep(unsigned long t)
@@ -28,9 +28,10 @@ void	*philo_routine(void *arg)
 		if (philo->id % 2 == 1)
 			optimized_usleep(1);
 		if (is_simulation_active(philo->rules))
-			take_forks(philo);
-		if (is_simulation_active(philo->rules))
-			eat(philo);
+		{
+			if (!eat(philo))
+				return (NULL);
+		}
 		if (is_simulation_active(philo->rules))
 			sleeep(philo);
 	}
@@ -43,48 +44,55 @@ static void	think(t_philo *philo)
 	//usleep(100);
 }
 
-static void	take_forks(t_philo *philo)
+static int	take_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
 		//usleep(100);
 		pthread_mutex_lock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has taken a right fork", 0);
+		safe_print(philo, "has taken a fork", 0);
 		pthread_mutex_lock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has taken a left fork", 0);
+		safe_print(philo, "has taken a fork", 0);
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has taken a left fork", 0);
+		safe_print(philo, "has taken a fork", 0);
+		if (philo->rules->num_philos == 1)
+		{
+			pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
+			return (0);
+		}
 		pthread_mutex_lock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has taken a right fork", 0);
+		safe_print(philo, "has taken a fork", 0);
 	}
+	return (1);
 }
 
-static void	eat(t_philo *philo)
+static int	eat(t_philo *philo)
 {
-	safe_print(philo, "is eating", 0);
-	pthread_mutex_lock(&philo->rules->death_mutex);
-	philo->last_meal_time = get_time_in_ms();
-	philo->meals_eaten++;
-	pthread_mutex_unlock(&philo->rules->death_mutex);
-	usleep(philo->rules->time_to_eat * 1000);
+	if (!take_forks(philo))
+		return (0);
+	if (is_simulation_active(philo->rules))
+	{
+		safe_print(philo, "is eating", 0);
+		pthread_mutex_lock(&philo->rules->death_mutex);
+		philo->last_meal_time = get_time_in_ms();
+		philo->meals_eaten++;
+		pthread_mutex_unlock(&philo->rules->death_mutex);
+		usleep(philo->rules->time_to_eat * 1000);
+	}
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_unlock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has put down a right fork", 0);
 		pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has put down a left fork", 0);
 	}
 	else
 	{
 		pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has put down a left fork", 0);
 		pthread_mutex_unlock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has put down a right fork", 0);
-
 	}
+	return (1);
 }
 
 static void	sleeep(t_philo *philo)
