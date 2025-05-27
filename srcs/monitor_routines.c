@@ -1,9 +1,5 @@
 #include "../includes/philo.h"
 
-static int	all_ate_enough(t_rules *rules);
-static int	is_philo_dead(t_philo *philo);
-static void	set_simulation_end(t_rules *rules);
-
 void	*monitor_routine(void *arg)
 {
 	t_rules	*rules;
@@ -15,59 +11,19 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		while (i < rules->num_philos)
 		{
-			if (is_philo_dead(&rules->philos[i]) || all_ate_enough(rules))
+			pthread_mutex_lock(&rules->death_mutex);
+			if (get_time_in_ms() - rules->philos[i].last_meal_time > (long long)rules->time_to_die)
 			{
-				set_simulation_end(rules);
+				safe_print(&rules->philos[i], "died", 1);
+				rules->is_dead = 1;
+				pthread_mutex_unlock(&rules->death_mutex);
 				return (NULL);
 			}
+			pthread_mutex_unlock(&rules->death_mutex);
 			i++;
 		}
-		usleep(100);
+		// usleep(100);
 	}
 	return (NULL);
-}
-
-static void	set_simulation_end(t_rules *rules)
-{
-	pthread_mutex_lock(&rules->sim_end_mutex);
-	rules->sim_end = 1;
-	pthread_mutex_unlock(&rules->sim_end_mutex);
-}
-
-static int	is_philo_dead(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->rules->meal_check_mutex);
-	if (get_time_in_ms() - philo->last_meal_time > (long long)philo->rules->time_to_die)
-	{
-		safe_print(philo, "died");
-		pthread_mutex_lock(&philo->rules->sim_end_mutex);
-		philo->rules->sim_end = 1;
-		pthread_mutex_unlock(&philo->rules->sim_end_mutex);
-		pthread_mutex_unlock(&philo->rules->meal_check_mutex);
-		return (1);
-	}
-	pthread_mutex_unlock(&philo->rules->meal_check_mutex);
-	return (0);
-}
-
-static int	all_ate_enough(t_rules *rules)
-{
-	int	i;
-
-	if (rules->meals_required == -1)
-		return (0);
-	i = 0;
-	while (i < rules->num_philos)
-	{
-		pthread_mutex_lock(&rules->meal_check_mutex);
-		if (rules->philos[i].meals_eaten < rules->meals_required)
-		{
-			pthread_mutex_unlock(&rules->meal_check_mutex);
-			return (0);
-		}
-		pthread_mutex_unlock(&rules->meal_check_mutex);
-		i++;
-	}
-	return (1);
 }
 

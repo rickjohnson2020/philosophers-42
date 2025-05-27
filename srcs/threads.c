@@ -1,20 +1,19 @@
 #include "../includes/philo.h"
 
-void	safe_print(t_philo *philo, char *msg)
+void	safe_print(t_philo *philo, char *msg, int dying_msg)
 {
-	pthread_mutex_lock(&philo->rules->print_mutex);
-	printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time, philo->id, msg);
-	pthread_mutex_unlock(&philo->rules->print_mutex);
-}
-
-int	is_simulation_active(t_rules *rules)
-{
-	int	active;
-
-	pthread_mutex_lock(&rules->sim_end_mutex);
-	active = !rules->sim_end;
-	pthread_mutex_unlock(&rules->sim_end_mutex);
-	return (active);
+	if (dying_msg)
+	{
+		pthread_mutex_lock(&philo->rules->print_mutex);
+		printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time, philo->id, msg);
+		pthread_mutex_unlock(&philo->rules->print_mutex);
+	}
+	else if (is_simulation_active(philo->rules))
+	{
+		pthread_mutex_lock(&philo->rules->print_mutex);
+		printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time, philo->id, msg);
+		pthread_mutex_unlock(&philo->rules->print_mutex);
+	}
 }
 
 void	start_threads(t_rules *rules)

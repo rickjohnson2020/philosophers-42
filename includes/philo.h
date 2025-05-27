@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*   By: yublee <yublee@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:19:50 by riyano            #+#    #+#             */
-/*   Updated: 2025/05/04 17:41:02 by riyano           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:06:06 by yublee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,11 @@ typedef struct	s_rules
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meals_required;
-	int				philo_dead;
-	int				sim_end;
+	int				is_dead;
 	long long		start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
-	pthread_mutex_t	meal_check_mutex;
-	pthread_mutex_t	sim_end_mutex;
+	pthread_mutex_t	death_mutex;
 	t_philo			*philos;
 	pthread_t		monitor;
 }	t_rules;
@@ -55,7 +53,7 @@ void		error_and_exit(const char *msg);
 long long	get_time_in_ms(void);
 void		init_rules(t_rules *rules);
 void		init_philos(t_rules *rules);
-void		safe_print(t_philo *philo, char *msg);
+void		safe_print(t_philo *philo, char *msg, int dying_msg);
 void		*philo_routine(void *arg);
 void		*monitor_routine(void *arg);
 void		start_threads(t_rules *rules);

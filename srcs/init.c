@@ -14,15 +14,12 @@ void	init_rules(t_rules *rules)
 			error_and_exit("Failed to initialize a fork mutex.\n");
 		i++;
 	}
-	rules->philo_dead = 0;
-	rules->sim_end = 0;
+	rules->is_dead = 0;
 	//rules->start_time = get_time_in_ms();
 	if (pthread_mutex_init(&rules->print_mutex, NULL) != 0)
 		error_and_exit("Failed to initialize a print mutex.\n");
-	if (pthread_mutex_init(&rules->meal_check_mutex, NULL) != 0)
+	if (pthread_mutex_init(&rules->death_mutex, NULL) != 0)
 		error_and_exit("Failed to initialize a meal check mutex.\n");
-	if (pthread_mutex_init(&rules->sim_end_mutex, NULL) != 0)
-		error_and_exit("Failed to initialize a sim end mutex.\n");
 }
 
 void	init_philos(t_rules *rules)

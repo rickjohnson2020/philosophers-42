@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*   By: yublee <yublee@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 18:40:19 by riyano            #+#    #+#             */
-/*   Updated: 2025/05/16 18:55:44 by riyano           ###   ########.fr       */
+/*   Updated: 2025/05/27 17:46:09 by yublee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../includes/philo.h"
 
 void	error_and_exit(const char *msg)
@@ -50,7 +51,7 @@ void	cleanup(t_rules *rules)
 	}
 	if (pthread_mutex_destroy(&rules->print_mutex) != 0)
 		error_and_exit("Failed to destroy print mutex.");
-	if (pthread_mutex_destroy(&rules->meal_check_mutex) != 0)
+	if (pthread_mutex_destroy(&rules->death_mutex) != 0)
 		error_and_exit("Failed to destroy meal check mutex.");
 	free(rules->philos);
 	free(rules->forks);
