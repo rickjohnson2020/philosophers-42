@@ -14,9 +14,9 @@
 
 static int	ft_atoi_safe(const char *str)
 {
-	int	result;
-	int	sign;
-	int	i;
+	long	result;
+	int		sign;
+	int		i;
 
 	result = 0;
 	sign = 1;
@@ -33,8 +33,11 @@ static int	ft_atoi_safe(const char *str)
 		if (str[i] < '0' || str[i] > '9')
 			error_and_exit("Invalid argument");
 		result = result * 10 + (str[i++] - '0');
+		if ((sign == 1 && result > INT_MAX)
+			|| (sign == -1 && -(result) < INT_MIN))
+			error_and_exit("All arguments must be within the range of Integer");
 	}
-	return (result * sign);
+	return ((int)result * sign);
 }
 
 static void	parse_args(int ac, char **av, t_rules *rules)
