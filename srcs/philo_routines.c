@@ -71,12 +71,12 @@ static int	eat(t_philo *philo)
 		pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
 		return (0);
 	}
+	safe_print(philo, "is eating", 0);
 	pthread_mutex_lock(&philo->rules->meal_check_mutex);
 	philo->last_meal_time = get_time_in_ms();
-	pthread_mutex_unlock(&philo->rules->meal_check_mutex);
-	safe_print(philo, "is eating", 0);
-	usleep(philo->rules->time_to_eat * 1000);
 	philo->meals_eaten++;
+	pthread_mutex_unlock(&philo->rules->meal_check_mutex);
+	usleep(philo->rules->time_to_eat * 1000);
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_unlock(&philo->rules->forks[philo->right_fork]);
