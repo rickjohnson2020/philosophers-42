@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitor_routines.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 16:53:40 by riyano            #+#    #+#             */
+/*   Updated: 2025/05/28 18:32:05 by riyano           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../includes/philo.h"
 
 static int	all_ate_enough(t_rules *rules);
@@ -22,7 +33,6 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
-		usleep(100);
 	}
 	return (NULL);
 }
@@ -30,19 +40,17 @@ void	*monitor_routine(void *arg)
 static void	set_simulation_end(t_rules *rules)
 {
 	pthread_mutex_lock(&rules->sim_end_mutex);
-	rules->sim_end = 1;
+	rules->simulation_end = 1;
 	pthread_mutex_unlock(&rules->sim_end_mutex);
 }
 
 static int	is_philo_dead(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->rules->meal_check_mutex);
-	if (get_time_in_ms() - philo->last_meal_time > (long long)philo->rules->time_to_die)
+	if (get_time_in_ms() - philo->last_meal_time
+		> (long long)philo->rules->time_to_die)
 	{
-		safe_print(philo, "died");
-		pthread_mutex_lock(&philo->rules->sim_end_mutex);
-		philo->rules->sim_end = 1;
-		pthread_mutex_unlock(&philo->rules->sim_end_mutex);
+		safe_print(philo, "died", 1);
 		pthread_mutex_unlock(&philo->rules->meal_check_mutex);
 		return (1);
 	}
@@ -70,4 +78,3 @@ static int	all_ate_enough(t_rules *rules)
 	}
 	return (1);
 }
-

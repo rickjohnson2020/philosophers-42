@@ -6,7 +6,7 @@
 /*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 17:19:50 by riyano            #+#    #+#             */
-/*   Updated: 2025/05/04 17:41:02 by riyano           ###   ########.fr       */
+/*   Updated: 2025/05/28 18:34:20 by riyano           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 # include <unistd.h>
 # include <limits.h>
 
-typedef struct	s_rules t_rules;
+typedef struct s_rules	t_rules;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread;
@@ -33,15 +33,14 @@ typedef struct	s_philo
 	t_rules			*rules;
 }	t_philo;
 
-typedef struct	s_rules
+typedef struct s_rules
 {
 	int				num_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				meals_required;
-	int				philo_dead;
-	int				sim_end;
+	int				simulation_end;
 	long long		start_time;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
@@ -53,9 +52,10 @@ typedef struct	s_rules
 
 void		error_and_exit(const char *msg);
 long long	get_time_in_ms(void);
+void		optimized_usleep(long long t);
 void		init_rules(t_rules *rules);
 void		init_philos(t_rules *rules);
-void		safe_print(t_philo *philo, char *msg);
+void		safe_print(t_philo *philo, char *msg, int dying_msg);
 void		*philo_routine(void *arg);
 void		*monitor_routine(void *arg);
 void		start_threads(t_rules *rules);

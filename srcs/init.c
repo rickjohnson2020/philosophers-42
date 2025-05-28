@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 17:17:32 by riyano            #+#    #+#             */
+/*   Updated: 2025/05/28 18:16:08 by riyano           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../includes/philo.h"
 
 void	init_rules(t_rules *rules)
@@ -11,29 +22,26 @@ void	init_rules(t_rules *rules)
 	while (i < rules->num_philos)
 	{
 		if (pthread_mutex_init(&rules->forks[i], NULL) != 0)
-			error_and_exit("Failed to initialize a fork mutex.\n");
+			error_and_exit("Failed to initialize a fork mutex.");
 		i++;
 	}
-	rules->philo_dead = 0;
-	rules->sim_end = 0;
-	//rules->start_time = get_time_in_ms();
+	rules->simulation_end = 0;
 	if (pthread_mutex_init(&rules->print_mutex, NULL) != 0)
-		error_and_exit("Failed to initialize a print mutex.\n");
+		error_and_exit("Failed to initialize print mutex.");
 	if (pthread_mutex_init(&rules->meal_check_mutex, NULL) != 0)
-		error_and_exit("Failed to initialize a meal check mutex.\n");
+		error_and_exit("Failed to initialize meal check mutex.");
 	if (pthread_mutex_init(&rules->sim_end_mutex, NULL) != 0)
-		error_and_exit("Failed to initialize a sim end mutex.\n");
+		error_and_exit("Failed to initialize simulation end mutex.");
 }
 
 void	init_philos(t_rules *rules)
 {
 	t_philo	*philos;
-	//t_philo	philos[rules->num_philos];
 	int		i;
 
 	philos = malloc(sizeof(t_philo) * rules->num_philos);
 	if (!philos)
-		error_and_exit("Failed to allocate philos.\n");
+		error_and_exit("Failed to allocate philos.");
 	i = 0;
 	while (i < rules->num_philos)
 	{

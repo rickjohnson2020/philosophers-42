@@ -6,7 +6,7 @@
 /*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 16:50:06 by riyano            #+#    #+#             */
-/*   Updated: 2025/05/04 17:59:46 by riyano           ###   ########.fr       */
+/*   Updated: 2025/05/28 17:20:25 by riyano           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,17 @@ static int	ft_atoi_safe(const char *str)
 			sign = -1;
 	}
 	if (str[i] == '\0')
-		error_and_exit("Invalid argument\n");
+		error_and_exit("Invalid argument");
 	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
-			error_and_exit("Invalid argument\n");
+			error_and_exit("Invalid argument");
 		result = result * 10 + (str[i++] - '0');
 	}
 	return (result * sign);
 }
 
-void	parse_args(int ac, char **av, t_rules *rules)
+static void	parse_args(int ac, char **av, t_rules *rules)
 {
 	int	i;
 
@@ -47,7 +47,7 @@ void	parse_args(int ac, char **av, t_rules *rules)
 	while (i < ac)
 	{
 		if (ft_atoi_safe(av[i]) < 0)
-			error_and_exit("All arguments must be positive integers\n");
+			error_and_exit("All arguments must be positive integers");
 		i++;
 	}
 	rules->num_philos = ft_atoi_safe(av[1]);
@@ -63,16 +63,11 @@ void	parse_args(int ac, char **av, t_rules *rules)
 int	main(int ac, char **av)
 {
 	t_rules	rules;
-	//t_philo	*philos;
-	printf("Parsing arguments...\n");
+
 	parse_args(ac, av, &rules);
-	printf("Initializing rules...\n");
 	init_rules(&rules);
-	printf("Initializing philosophers...\n");
 	init_philos(&rules);
-	printf("Starting threads...\n");
 	start_threads(&rules);
 	cleanup(&rules);
-	printf("Done.\n");
 	return (0);
 }

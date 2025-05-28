@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_routines.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: riyano <riyano@student.42london.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/28 16:45:47 by riyano            #+#    #+#             */
+/*   Updated: 2025/05/28 18:29:29 by riyano           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../includes/philo.h"
 
 static void	think(t_philo *philo);
-static void	take_forks(t_philo *philo);
-static void	eat(t_philo *philo);
+static int	take_forks(t_philo *philo);
+static int	eat(t_philo *philo);
 static void	sleeep(t_philo *philo);
 
 void	*philo_routine(void *arg)
@@ -10,16 +21,17 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	if (philo->id % 2 == 0)
+		optimized_usleep(1);
 	while (is_simulation_active(philo->rules))
 	{
 		if (is_simulation_active(philo->rules))
 			think(philo);
-		if (philo->id % 2 == 0)
-			usleep(100);
+		if (philo->id % 2 == 1)
+			optimized_usleep(1);
 		if (is_simulation_active(philo->rules))
-			take_forks(philo);
-		if (is_simulation_active(philo->rules))
-			eat(philo);
+			if (!eat(philo))
+				return (NULL);
 		if (is_simulation_active(philo->rules))
 			sleeep(philo);
 	}
@@ -28,35 +40,41 @@ void	*philo_routine(void *arg)
 
 static void	think(t_philo *philo)
 {
-	safe_print(philo, "is thinking");
-	//usleep(100);
+	safe_print(philo, "is thinking", 0);
 }
 
-static void	take_forks(t_philo *philo)
+static int	take_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
-		//usleep(100);
 		pthread_mutex_lock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has taken a fork");
+		safe_print(philo, "has taken a fork", 0);
 		pthread_mutex_lock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has taken a fork");
+		safe_print(philo, "has taken a fork", 0);
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->rules->forks[philo->left_fork]);
-		safe_print(philo, "has taken a fork");
+		safe_print(philo, "has taken a fork", 0);
+		if (philo->rules->num_philos == 1)
+			return (0);
 		pthread_mutex_lock(&philo->rules->forks[philo->right_fork]);
-		safe_print(philo, "has taken a fork");
+		safe_print(philo, "has taken a fork", 0);
 	}
+	return (1);
 }
 
-static void	eat(t_philo *philo)
+static int	eat(t_philo *philo)
 {
+	if (!take_forks(philo))
+	{
+		pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
+		return (0);
+	}
 	pthread_mutex_lock(&philo->rules->meal_check_mutex);
 	philo->last_meal_time = get_time_in_ms();
 	pthread_mutex_unlock(&philo->rules->meal_check_mutex);
-	safe_print(philo, "is eating");
+	safe_print(philo, "is eating", 0);
 	usleep(philo->rules->time_to_eat * 1000);
 	philo->meals_eaten++;
 	if (philo->id % 2 == 0)
@@ -68,13 +86,12 @@ static void	eat(t_philo *philo)
 	{
 		pthread_mutex_unlock(&philo->rules->forks[philo->left_fork]);
 		pthread_mutex_unlock(&philo->rules->forks[philo->right_fork]);
-
 	}
+	return (1);
 }
 
 static void	sleeep(t_philo *philo)
 {
-	safe_print(philo, "is sleeping");
+	safe_print(philo, "is sleeping", 0);
 	usleep(philo->rules->time_to_sleep * 1000);
 }
-
