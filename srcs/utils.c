@@ -37,30 +37,20 @@ void	optimized_usleep(long long t)
 		usleep(1000);
 }
 
-void	cleanup(t_rules *rules)
+void	safe_print(t_philo *philo, char *msg, int dying_msg)
 {
-	int	i;
-
-	i = 0;
-	while (i < rules->num_philos)
+	if (dying_msg)
 	{
-		if (pthread_join(rules->philos[i++].thread, NULL) != 0)
-			error_and_exit("Failed to join philosopher thread.");
+		pthread_mutex_lock(&philo->rules->print_mutex);
+		printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time,
+			philo->id, msg);
+		pthread_mutex_unlock(&philo->rules->print_mutex);
 	}
-	if (pthread_join(rules->monitor, NULL) != 0)
-		error_and_exit("Failed to join philosopher thread.");
-	i = 0;
-	while (i < rules->num_philos)
+	else if (is_simulation_active(philo->rules))
 	{
-		if (pthread_mutex_destroy(&rules->forks[i++]) != 0)
-			error_and_exit("Failed to destroy fork.");
+		pthread_mutex_lock(&philo->rules->print_mutex);
+		printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time,
+			philo->id, msg);
+		pthread_mutex_unlock(&philo->rules->print_mutex);
 	}
-	if (pthread_mutex_destroy(&rules->print_mutex) != 0)
-		error_and_exit("Failed to destroy print mutex.");
-	if (pthread_mutex_destroy(&rules->meal_check_mutex) != 0)
-		error_and_exit("Failed to destroy meal check mutex.");
-	if (pthread_mutex_destroy(&rules->sim_end_mutex) != 0)
-		error_and_exit("Failed to destroy sim end mutex.");
-	free(rules->philos);
-	free(rules->forks);
 }

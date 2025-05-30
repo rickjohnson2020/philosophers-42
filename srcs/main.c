@@ -63,6 +63,51 @@ static void	parse_args(int ac, char **av, t_rules *rules)
 		rules->meals_required = -1;
 }
 
+static void	start_threads(t_rules *rules)
+{
+	int	i;
+
+	rules->start_time = get_time_in_ms();
+	i = 0;
+	while (i < rules->num_philos)
+	{
+		if (pthread_create(&rules->philos[i].thread, NULL,
+				&philo_routine, &rules->philos[i]) != 0)
+			error_and_exit("Failed to create philosopher thread.");
+		i++;
+	}
+	if (pthread_create(&rules->monitor, NULL, &monitor_routine, rules) != 0)
+		error_and_exit("Failed to create monitor thread.");
+}
+
+static void	cleanup(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->num_philos)
+	{
+		if (pthread_join(rules->philos[i++].thread, NULL) != 0)
+			error_and_exit("Failed to join philosopher thread.");
+	}
+	if (pthread_join(rules->monitor, NULL) != 0)
+		error_and_exit("Failed to join philosopher thread.");
+	i = 0;
+	while (i < rules->num_philos)
+	{
+		if (pthread_mutex_destroy(&rules->forks[i++]) != 0)
+			error_and_exit("Failed to destroy fork.");
+	}
+	if (pthread_mutex_destroy(&rules->print_mutex) != 0)
+		error_and_exit("Failed to destroy print mutex.");
+	if (pthread_mutex_destroy(&rules->meal_check_mutex) != 0)
+		error_and_exit("Failed to destroy meal check mutex.");
+	if (pthread_mutex_destroy(&rules->sim_end_mutex) != 0)
+		error_and_exit("Failed to destroy sim end mutex.");
+	free(rules->philos);
+	free(rules->forks);
+}
+
 int	main(int ac, char **av)
 {
 	t_rules	rules;

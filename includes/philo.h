@@ -58,8 +58,6 @@ void		init_philos(t_rules *rules);
 void		safe_print(t_philo *philo, char *msg, int dying_msg);
 void		*philo_routine(void *arg);
 void		*monitor_routine(void *arg);
-void		start_threads(t_rules *rules);
 int			is_simulation_active(t_rules *rules);
-void		cleanup(t_rules *rules);
 
 #endif

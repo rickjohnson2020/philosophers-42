@@ -18,7 +18,7 @@ BUILD_DIR = build
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRC_FILES = main.c init.c utils.c philo_routines.c threads.c monitor_routines.c
+SRC_FILES = main.c init.c utils.c philo_routines.c simulation_check.c monitor_routines.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
