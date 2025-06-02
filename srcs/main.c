@@ -61,6 +61,10 @@ static void	parse_args(int ac, char **av, t_rules *rules)
 		rules->meals_required = ft_atoi_safe(av[5]);
 	else
 		rules->meals_required = -1;
+	if (rules->num_philos < 1)
+		error_and_exit("number of philosophers must be at least 1");
+	if (ac == 6 && rules->meals_required == 0)
+		error_and_exit("No need to eat — exiting immediately.");
 }
 
 static void	start_threads(t_rules *rules)
