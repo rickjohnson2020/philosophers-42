@@ -52,7 +52,7 @@ typedef struct s_rules
 
 void		error_and_exit(const char *msg);
 long long	get_time_in_ms(void);
-void		optimized_usleep(long long t);
+void		smart_usleep(long long t, t_rules *rules);
 void		init_rules(t_rules *rules);
 void		init_philos(t_rules *rules);
 void		safe_print(t_philo *philo, char *msg, int dying_msg);

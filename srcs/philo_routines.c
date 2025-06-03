@@ -22,18 +22,19 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	if (philo->id % 2 == 0)
-		optimized_usleep(1);
+		smart_usleep(1, philo->rules);
 	while (is_simulation_active(philo->rules))
 	{
-		if (is_simulation_active(philo->rules))
-			think(philo);
+		think(philo);
 		if (philo->id % 2 == 1)
-			optimized_usleep(1);
-		if (is_simulation_active(philo->rules))
-			if (!eat(philo))
-				return (NULL);
-		if (is_simulation_active(philo->rules))
-			sleeep(philo);
+			smart_usleep(1, philo->rules);
+		if (!is_simulation_active(philo->rules))
+			break ;
+		if (!eat(philo))
+			break ;
+		if (!is_simulation_active(philo->rules))
+			break ;
+		sleeep(philo);
 	}
 	return (NULL);
 }
@@ -78,7 +79,7 @@ static int	eat(t_philo *philo)
 		philo->last_meal_time = get_time_in_ms();
 		philo->meals_eaten++;
 		pthread_mutex_unlock(&philo->rules->meal_check_mutex);
-		usleep(philo->rules->time_to_eat * 1000);
+		smart_usleep(philo->rules->time_to_eat, philo->rules);
 	}
 	if (philo->id % 2 == 0)
 	{
@@ -96,5 +97,5 @@ static int	eat(t_philo *philo)
 static void	sleeep(t_philo *philo)
 {
 	safe_print(philo, "is sleeping", 0);
-	usleep(philo->rules->time_to_sleep * 1000);
+	smart_usleep(philo->rules->time_to_sleep, philo->rules);
 }

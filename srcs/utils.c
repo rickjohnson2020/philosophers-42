@@ -28,13 +28,13 @@ long long	get_time_in_ms(void)
 	return ((long long)tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	optimized_usleep(long long t)
+void	smart_usleep(long long ms, t_rules *rules)
 {
-	long long	start_time;
+	long long	start;
 
-	start_time = get_time_in_ms();
-	while (get_time_in_ms() - start_time < t)
-		usleep(1000);
+	start = get_time_in_ms();
+	while (is_simulation_active(rules) && (get_time_in_ms() - start < ms))
+		usleep(500);
 }
 
 void	safe_print(t_philo *philo, char *msg, int dying_msg)

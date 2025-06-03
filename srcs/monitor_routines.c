@@ -33,7 +33,7 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
-		usleep(100);
+		usleep(500);
 	}
 	return (NULL);
 }
