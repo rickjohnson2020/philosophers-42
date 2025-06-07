@@ -45,7 +45,7 @@ static int	is_philo_dead(t_philo *philo)
 
 	pthread_mutex_lock(&philo->rules->meal_check_mutex);
 	is_dead = (get_time_in_ms() - philo->last_meal_time
-		> (long long)philo->rules->time_to_die);
+			> (long long)philo->rules->time_to_die);
 	pthread_mutex_unlock(&philo->rules->meal_check_mutex);
 	if (is_dead)
 	{
