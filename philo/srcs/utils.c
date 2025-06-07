@@ -46,11 +46,14 @@ void	safe_print(t_philo *philo, char *msg, int dying_msg)
 			philo->id, msg);
 		pthread_mutex_unlock(&philo->rules->print_mutex);
 	}
-	else if (is_simulation_active(philo->rules))
+	else
 	{
 		pthread_mutex_lock(&philo->rules->print_mutex);
-		printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time,
-			philo->id, msg);
+		if (is_simulation_active(philo->rules))
+		{
+			printf("%lld %d %s\n", get_time_in_ms() - philo->rules->start_time,
+				philo->id, msg);
+		}
 		pthread_mutex_unlock(&philo->rules->print_mutex);
 	}
 }

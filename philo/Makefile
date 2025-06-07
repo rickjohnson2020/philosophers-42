@@ -16,7 +16,7 @@ SRC_DIR = srcs
 BUILD_DIR = build
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -O3
 
 SRC_FILES = main.c init.c utils.c philo_routines.c simulation_check.c monitor_routines.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
